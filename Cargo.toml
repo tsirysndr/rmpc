@@ -49,7 +49,7 @@ crossbeam = "0.8.4"
 
 [build-dependencies]
 clap = { workspace = true }
-clap_complete = "4.5.35"
+clap_complete = "4.5.24"
 clap_mangen = "0.2.24"
 vergen-gitcl = { version = "1.0.1", features = ["build"] }
 
