@@ -65,6 +65,8 @@ pub fn main_tui() -> Result<()> {
     let config =
         ConfigFile::default().into_config(None, std::mem::take(&mut address), std::mem::take(&mut password), false)?;
 
+    try_ret!(event_tx.send(AppEvent::RequestRender), "Failed to render first frame");
+
     let mut client = try_ret!(
         Client::init(config.address, config.password, "command"),
         "Failed to connect to MPD"
