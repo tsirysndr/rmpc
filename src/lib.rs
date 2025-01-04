@@ -56,7 +56,7 @@ pub fn main_tui() -> Result<()> {
 
     try_ret!(event_tx.send(AppEvent::RequestRender), "Failed to render first frame");
 
-    let mut address = Some(std::env::var("MPD_HOST").unwrap_or("localhost:6600".to_string()));
+    let mut address = Some(std::env::var("MPD_HOST").unwrap_or("127.0.0.1:6600".to_string()));
     let mut password = match std::env::var("MPD_PASSWORD") {
         Ok(password) => Some(password),
         Err(_) => None,
@@ -65,6 +65,12 @@ pub fn main_tui() -> Result<()> {
     let config =
         ConfigFile::default().into_config(None, std::mem::take(&mut address), std::mem::take(&mut password), false)?;
 
+    if let Some(lyrics_dir) = config.lyrics_dir {
+        try_ret!(
+            worker_tx.send(WorkRequest::IndexLyrics { lyrics_dir }),
+            "Failed to request lyrics indexing"
+        );
+    }
     try_ret!(event_tx.send(AppEvent::RequestRender), "Failed to render first frame");
 
     let mut client = try_ret!(
@@ -73,7 +79,7 @@ pub fn main_tui() -> Result<()> {
     );
     client.set_read_timeout(None)?;
 
-    let enable_mouse = true;
+    let enable_mouse = config.enable_mouse;
     let terminal = try_ret!(ui::setup_terminal(enable_mouse), "Failed to setup terminal");
     let tx_clone = event_tx.clone();
 
