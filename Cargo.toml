@@ -9,6 +9,10 @@ repository = "https://github.com/mierak/rmpc"
 readme = "README.md"
 rust-version = "1.81.0"
 
+[lib]
+name = "rmpc"
+path = "src/lib.rs"
+
 # See more keys and their definitions at https://doc.rust-lang.org/cargo/reference/manifest.html
 
 [dependencies]
